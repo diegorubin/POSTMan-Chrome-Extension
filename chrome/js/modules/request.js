@@ -995,6 +995,7 @@ pm.request = {
                 }
                 else {
                     this.text = response.responseText;
+                    pm.indexedDB.addResponse(this.text, pm.request.url);
                 }
 
                 pm.request.endTime = new Date().getTime();
@@ -2055,6 +2056,7 @@ pm.request = {
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true); //Open the XHR request. Will be sent later
         xhr.onreadystatechange = function (event) {
+          console.log(event);
             pm.request.response.load(event.target);
         };
 

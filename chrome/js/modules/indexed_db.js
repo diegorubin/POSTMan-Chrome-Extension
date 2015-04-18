@@ -28,6 +28,11 @@ pm.indexedDB = {
                         requestStore.createIndex("timestamp", "timestamp", { unique:false});
                     }
 
+                    if (!db.objectStoreNames.contains("responses")) {
+                        var responseStore = db.createObjectStore("responses", {keyPath:"id"});
+                        responseStore.createIndex("timestamp", "timestamp", { unique:false});
+                    }
+
                     if (!db.objectStoreNames.contains("collections")) {
                         var collectionsStore = db.createObjectStore("collections", {keyPath:"id"});
                         collectionsStore.createIndex("timestamp", "timestamp", { unique:false});
@@ -87,6 +92,11 @@ pm.indexedDB = {
             if (!db.objectStoreNames.contains("requests")) {
                 var requestStore = db.createObjectStore("requests", {keyPath:"id"});
                 requestStore.createIndex("timestamp", "timestamp", { unique:false});
+            }
+
+            if (!db.objectStoreNames.contains("responses")) {
+                var responseStore = db.createObjectStore("responses", {keyPath:"id"});
+                responseStore.createIndex("timestamp", "timestamp", { unique:false});
             }
 
             if (!db.objectStoreNames.contains("collections")) {
@@ -318,6 +328,27 @@ pm.indexedDB = {
             result['continue']();
         };
         cursorRequest.onerror = pm.indexedDB.onerror;
+    },
+
+    addResponse: function (body, url, callback){
+        var db = pm.indexedDB.db;
+        var trans = db.transaction(["responses"], "readwrite");
+        var store = trans.objectStore("responses");
+        var response = store.put({
+            id: guid(),
+            url: url,
+            body: body,
+            date: Date()
+        });
+
+        response.onsuccess = function (e) {
+            callback(response);
+        };
+
+        response.onerror = function (e) {
+            console.log(e.value);
+        };
+
     },
 
     addRequest:function (historyRequest, callback) {

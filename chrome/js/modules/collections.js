@@ -724,6 +724,7 @@ pm.collections = {
     },
 
     saveResponseAsSample:function (response) {
+      console.log(response);
         pm.indexedDB.getCollectionRequest(response.collectionRequestId, function (request) {
             if ("responses" in request && request["responses"] !== undefined) {
                 request["responses"].push(response);
